@@ -1,0 +1,75 @@
+<div class="min-h-screen flex items-center justify-center bg-base-200 px-4">
+  <div class="card w-full max-w-sm bg-base-100 shadow-xl">
+    <div class="card-body gap-4">
+
+      <div class="text-center">
+        <h1 class="text-2xl font-bold">Iniciar sesión</h1>
+        <p class="text-base-content/60 text-sm mt-1">Ingresa tus credenciales para continuar</p>
+      </div>
+
+      @if (hasError()) {
+      <div role="alert" class="alert alert-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor"
+          aria-hidden="true">
+          <path fill-rule="evenodd"
+            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+            clip-rule="evenodd" />
+        </svg>
+        <span>Correo o contraseña incorrectos.</span>
+      </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="flex flex-col gap-4">
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Correo electrónico</legend>
+          <input id="email" type="email" formControlName="email" class="input w-full"
+            [class.input-error]="form.controls.email.invalid && form.controls.email.touched" placeholder="tu@correo.com"
+            autocomplete="email" aria-required="true"
+            [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched ? 'true' : null"
+            aria-describedby="email-error" />
+          @if (form.controls.email.touched) {
+          @if (form.controls.email.hasError('required')) {
+          <p id="email-error" class="fieldset-label text-error">El correo es requerido.</p>
+          } @else if (form.controls.email.hasError('email')) {
+          <p id="email-error" class="fieldset-label text-error">Ingresa un correo válido.</p>
+          }
+          }
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Contraseña</legend>
+          <input id="password" type="password" formControlName="password" class="input w-full"
+            [class.input-error]="form.controls.password.invalid && form.controls.password.touched"
+            placeholder="••••••••" autocomplete="current-password" aria-required="true"
+            [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched ? 'true' : null"
+            aria-describedby="password-error" />
+          @if (form.controls.password.touched) {
+          @if (form.controls.password.hasError('required')) {
+          <p id="password-error" class="fieldset-label text-error">La contraseña es requerida.</p>
+          } @else if (form.controls.password.hasError('minlength')) {
+          <p id="password-error" class="fieldset-label text-error">Mínimo 6 caracteres.</p>
+          }
+          }
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary w-full mt-2" [disabled]="isLoading()"
+          [attr.aria-busy]="isLoading()">
+          @if (isLoading()) {
+          <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
+          Ingresando...
+          } @else {
+          Ingresar
+          }
+        </button>
+
+      </form>
+
+      <p class="text-center text-sm text-base-content/60">
+        ¿No tienes cuenta?
+        <a routerLink="/auth/register" class="link link-primary">Regístrate</a>
+      </p>
+
+    </div>
+  </div>
+</div>
