@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse } from '../interfaces/auth.interfaces';
 import { RegisterRequest, SessionUser, UserResponse } from '../interfaces/user.interface';
 
-type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
+export type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -17,15 +17,12 @@ export class AuthService {
   private readonly _refreshToken = signal<string | null>(localStorage.getItem('refreshToken'));
 
   private readonly _sessionUserResource = rxResource({
-    params: () => this._token(),
+    params: () => this._token() ?? 'empty',
     stream: ({ params: token }) => {
-      if (!token) return of(null);
+      if (token === 'empty') return of(null);
       return this.http.get<UserResponse>(`${this.baseUrl}/auth/profile`).pipe(
         map(({ password: _password, ...user }) => user as SessionUser),
-        catchError(() => {
-          this.logout();
-          return of(null);
-        })
+        catchError(() => of(null))
       );
     },
   });
@@ -44,8 +41,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.baseUrl}/auth/login`, { email, password }).pipe(
       tap(({ access_token, refresh_token }) => this.setTokens(access_token, refresh_token)),
       map(() => true),
-      catchError(() => {
-        this.logout();
+      catchError((error) => {
+        console.error('Login failed:', error);
         return of(false);
       })
     );
@@ -56,14 +53,16 @@ export class AuthService {
     return this.http.post<UserResponse>(`${this.baseUrl}/users`, { name, email, password, avatar }).pipe(
       map(() => true),
       switchMap(() => this.login({ email, password })),
-      catchError(() => of(false))
+      catchError((error) => {
+        console.error('Register failed:', error);
+        return of(false);
+      })
     );
   }
 
   refreshAccessToken(): Observable<boolean> {
     const currentRefreshToken = this._refreshToken();
     if (!currentRefreshToken) {
-      this.logout();
       return of(false);
     }
     return this.http
@@ -75,8 +74,8 @@ export class AuthService {
           this.setTokens(access_token, refresh_token)
         ),
         map(() => true),
-        catchError(() => {
-          this.logout();
+        catchError((error) => {
+          console.error('Token refresh failed:', error);
           return of(false);
         })
       );
