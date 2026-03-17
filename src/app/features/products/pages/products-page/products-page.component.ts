@@ -1,21 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ProductsService } from '../../services/products.service';
+import { ProductsService } from '../../../../data/services/products.service';
 import { rxResource } from '@angular/core/rxjs-interop';
-
-const MOCK_IMAGE = 'https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp';
+import { ProductCardComponent } from '../../components/product-card/product-card.component';
+import { CardSkeletonComponent } from '../../../../shared/components/card-skeleton/card-skeleton.component';
 
 @Component({
   selector: 'app-products-page',
-  imports: [],
+  imports: [ProductCardComponent, CardSkeletonComponent],
   templateUrl: './products-page.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsPageComponent {
-  private productsService = inject(ProductsService);
+  private readonly productsService = inject(ProductsService);
 
-  productsResource = rxResource({
-    stream: () => this.productsService.getProducts({ limit: 9, offset: 0 }),
+  readonly productsResource = rxResource({
+    stream: () => this.productsService.getProducts(),
   });
 }
-

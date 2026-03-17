@@ -2,71 +2,18 @@
 
   <h1 class="text-3xl font-bold">Angular <span class="text-primary">Shop</span></h1>
 
-  <!-- Filtros de los productos -->
-  <section aria-label="Filtros de productos" class="flex flex-wrap items-end gap-3">
-    <fieldset class="fieldset flex-1 min-w-40">
-      <legend class="fieldset-legend">Buscar</legend>
-      <input type="search" class="input input-bordered w-full" placeholder="Nombre del producto..." />
-    </fieldset>
-
-    <fieldset class="fieldset min-w-40">
-      <legend class="fieldset-legend">Categoría</legend>
-      <select class="select select-bordered w-full">
-        <option value="">Todas</option>
-        <option>Ropa</option>
-        <option>Electrónica</option>
-        <option>Muebles</option>
-        <option>Calzado</option>
-      </select>
-    </fieldset>
-
-    <fieldset class="fieldset min-w-40">
-      <legend class="fieldset-legend">Ordenar por</legend>
-      <select class="select select-bordered w-full">
-        <option>Relevancia</option>
-        <option>Menor precio</option>
-        <option>Mayor precio</option>
-        <option>Más recientes</option>
-      </select>
-    </fieldset>
-
-    <button class="btn btn-ghost">Limpiar filtros</button>
-  </section>
-
   <!-- Grid de cards de los productos -->
   <section aria-label="Listado de productos">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-
-      @for (product of productsResource.value(); track product.id) {
-      <article class="card card-border bg-base-100 shadow-sm hover:shadow-md transition-shadow">
-        <figure>
-          <img [src]="product.images[0]" [alt]="product.title" class="h-48 w-full object-cover" />
-        </figure>
-        <div class="card-body gap-2">
-          <span class="badge badge-soft badge-primary self-start">{{ product.category }}</span>
-          <h2 class="card-title text-base">{{ product.title }}</h2>
-          <p class="text-xl font-bold text-primary">${{ product.price }}</p>
-          <div class="card-actions mt-2">
-            <button class="btn btn-primary btn-sm w-full">Agregar al carrito</button>
-          </div>
-        </div>
-      </article>
+      @if (productsResource.isLoading()) {
+      @for (card of [1,2,3,4,5,6]; track card) {
+      <app-card-skeleton />
       }
-
+      }
+      @for (product of productsResource.value() ?? []; track product.id) {
+      <app-product-card [product]="product" />
+      }
     </div>
   </section>
-
-  <!-- Componente paginación -->
-  <nav aria-label="Paginación" class="flex justify-center">
-    <div class="join">
-      <button class="join-item btn btn-outline" aria-label="Página anterior">«</button>
-      <button class="join-item btn btn-outline btn-active" aria-current="page">1</button>
-      <button class="join-item btn btn-outline">2</button>
-      <button class="join-item btn btn-outline">3</button>
-      <button class="join-item btn btn-outline btn-disabled" aria-label="Más páginas">...</button>
-      <button class="join-item btn btn-outline">10</button>
-      <button class="join-item btn btn-outline" aria-label="Página siguiente">»</button>
-    </div>
-  </nav>
 
 </div>

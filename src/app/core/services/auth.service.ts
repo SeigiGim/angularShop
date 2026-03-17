@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse } from '../interfaces/auth.interfaces';
 import { RegisterRequest, SessionUser, UserResponse } from '../interfaces/user.interface';
+import { environment } from '../../../environments/environment';
 
 export type AuthStatus = 'checking' | 'authenticated' | 'not-authenticated';
 
@@ -22,7 +22,13 @@ export class AuthService {
       if (token === 'empty') return of(null);
       return this.http.get<UserResponse>(`${this.baseUrl}/auth/profile`).pipe(
         map(({ password: _password, ...user }) => user as SessionUser),
-        catchError(() => of(null))
+        catchError((error) => {
+          // Permitir que el interceptor maneje 401
+          if (error instanceof HttpErrorResponse && error.status === 401) {
+            throw error;
+          }
+          return of(null);
+        })
       );
     },
   });

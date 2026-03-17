@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { authenticatedGuard } from './auth/guards/authenticated.guard';
-import { isAdminGuard } from './auth/guards/is-admin.guard';
+import { isAdminGuard } from './core/guards/is-admin.guard';
+import { authenticatedGuard } from './core/guards/authenticated.guard';
 
 export const routes: Routes = [
   {
     path: 'auth',
-    loadChildren: () => import('./auth/auth.routes'),
+    loadChildren: () => import('./features/auth/auth.routes'),
     canMatch: [authenticatedGuard]
   },
   {

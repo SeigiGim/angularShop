@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { filter, map, take } from 'rxjs';
-import { PATHS } from '../../core/app-paths';
+import { AuthService } from '../services/auth.service';
+import { PATHS } from '../app-paths';
 
 export const authenticatedGuard: CanMatchFn = () => {
   const authService = inject(AuthService);
