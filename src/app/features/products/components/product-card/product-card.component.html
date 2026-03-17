@@ -1,1 +1,13 @@
-<p>product-card works!</p>
+<article class="card card-border bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+  <figure>
+    <img [src]="product()!.images[0]" [alt]="product()!.title" class="h-48 w-full object-cover" />
+  </figure>
+  <div class="card-body gap-2">
+    <span class="badge badge-soft badge-primary self-start">{{ product()?.category?.name }}</span>
+    <h2 class="card-title text-base">{{ product()!.title }}</h2>
+    <p class="text-xl font-bold text-primary">${{ product()!.price }}</p>
+    <div class="card-actions mt-2">
+      <button class="btn btn-primary btn-sm w-full">Agregar al carrito</button>
+    </div>
+  </div>
+</article>

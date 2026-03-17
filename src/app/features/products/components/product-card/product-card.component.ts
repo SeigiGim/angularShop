@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Product } from '../../../../data/interfaces/product.interface';
 
 @Component({
   selector: 'app-product-card',
@@ -7,4 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductCardComponent {}
+export class ProductCardComponent {
+  product = input<Product>();
+}
